@@ -60,14 +60,19 @@
 		alert('Webcam error!', e);
 	};
 
-	if (navigator.getUserMedia) {
-		navigator.getUserMedia({audio: true, video: true}, function(stream) {
-			video.src = stream;
+	if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+		navigator.mediaDevices.getUserMedia({video: true}).then(function(stream) {
+			video.srcObject = stream;
+			initialize();
+		}, webcamError);
+	} else if (navigator.getUserMedia) {
+		navigator.getUserMedia({video: true}, function(stream) {
+			video.srcObject = stream;
 			initialize();
 		}, webcamError);
 	} else if (navigator.webkitGetUserMedia) {
-		navigator.webkitGetUserMedia({audio:true, video:true}, function(stream) {
-			video.src = window.webkitURL.createObjectURL(stream);
+		navigator.webkitGetUserMedia({video:true}, function(stream) {
+			video.srcObject = window.webkitURL.createObjectURL(stream);
 			initialize();
 		}, webcamError);
 	} else {
